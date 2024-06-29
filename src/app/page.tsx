@@ -1,14 +1,9 @@
 import {Button} from "@/components/Button";
 import {Input} from "@/components/Input";
 import {Textarea} from "@/components/Textarea";
-import {db} from "@/server/db/db";
-import {Users} from "@/server/db/schema";
-import {eq} from "drizzle-orm";
+import {UserInfo, NextAuthSessionProvider} from "@/app/UserInfo";
 
 export default async function Home() {
-  // let users = await db.query.Users.findMany();
-  let users = await db.select().from(Users).where(eq(Users.name, "liuziyee"));
-
   return (
     <div className="h-screen flex justify-center items-center">
       <form className="w-full max-w-md flex flex-col gap-4">
@@ -20,12 +15,9 @@ export default async function Home() {
         </Textarea>
         <Button type="submit">Submit</Button>
       </form>
-
-      {
-        users.map((user) => (
-          <div key={user.id}>{user.name}</div>
-        ))
-      }
+      <NextAuthSessionProvider>
+        <UserInfo/>
+      </NextAuthSessionProvider>
     </div>
   )
 }

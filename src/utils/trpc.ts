@@ -12,16 +12,16 @@ export async function createTRPCContext() {
 
 const t = initTRPC.context<typeof createTRPCContext>().create();
 
-const {router, procedure} = t;
+const { router, procedure } = t;
 
-const logMiddleware = t.middleware(async ({ctx, next}) => {
+const logMiddleware = t.middleware(async ({ ctx, next }) => {
   const start = Date.now();
   const result = await next();
   console.log("api time: ", Date.now() - start);
   return result;
 });
 
-const checkLoginMiddleware = t.middleware(async ({ctx, next}) => {
+const checkLoginMiddleware = t.middleware(async ({ ctx, next }) => {
   if (!ctx.session?.user) {
     throw new TRPCError({
       code: "FORBIDDEN",
@@ -35,9 +35,7 @@ const logProcedure = procedure.use(logMiddleware);
 const checkLoginProcedure = procedure.use(checkLoginMiddleware);
 
 export const testRouter = router({
-  hello: logProcedure.query(async ({ctx}) => {
-    console.log("hello接口", ctx.session);
-
+  hello: logProcedure.query(async ({ ctx }) => {
     return {
       hello: "world"
     }

@@ -1,6 +1,6 @@
 "use client"
 
-import {SessionProvider, useSession} from "next-auth/react"
+import { SessionProvider as NextAuthSessionProvider, useSession } from "next-auth/react"
 
 export function UserInfo() {
   const session = useSession();
@@ -10,6 +10,6 @@ export function UserInfo() {
   return <div>{session.data?.user?.name}</div>
 }
 
-export function NextAuthSessionProvider(props: any) {
-  return <SessionProvider {...props}></SessionProvider>
+export function SessionProvider(props: any) {
+  return <NextAuthSessionProvider {...props}></NextAuthSessionProvider>
 }

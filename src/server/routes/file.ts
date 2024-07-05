@@ -6,8 +6,8 @@ import { protectedProcedure, router } from "@/server/trpc";
 const bucket = "uploadimage-1308004794";
 const apiEndpoint = "https://cos.ap-chengdu.myqcloud.com";
 const region = "ap-chengdu";
-const COS_APP_ID = "AKIDeYYdn0ESj4Pj3Nh5VwMoHwfO3lVEsRzS"
-const COS_APP_SECRET = "TvTwQqARcikgS9ujaZ9X57RydYgtNuJa"
+const COS_APP_ID = process.env.COS_APP_ID;
+const COS_APP_SECRET = process.env.COS_APP_SECRET;
 
 export const fileRoutes = router({
   createPresignedUrl: protectedProcedure

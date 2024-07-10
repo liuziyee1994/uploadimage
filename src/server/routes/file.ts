@@ -2,6 +2,10 @@ import { z } from "zod";
 import { PutObjectCommand, PutObjectCommandInput, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { protectedProcedure, router } from "@/server/trpc";
+import { db } from "@/server/db/db";
+import { files } from "@/server/db/schema";
+import { v4 as uuid } from "uuid";
+import { desc } from "drizzle-orm";
 
 const bucket = "uploadimage-1308004794";
 const apiEndpoint = "https://cos.ap-chengdu.myqcloud.com";
@@ -50,4 +54,36 @@ export const fileRoutes = router({
         method: "PUT" as const,
       };
     }),
+  saveFile: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        path: z.string(),
+        type: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { session } = ctx;
+      const url = new URL(input.path);
+      const photo = await db
+        .insert(files)
+        .values({
+          ...input,
+          id: uuid(),
+          path: url.pathname,
+          url: url.toString(),
+          userId: session.user.id,
+          contentType: input.type,
+        })
+        .returning();
+
+      return photo[0];
+    }),
+  listFiles: protectedProcedure.query(async () => {
+    const result = await db.query.files.findMany({
+      orderBy: [desc(files.createdAt)],
+    });
+
+    return result;
+  })
 });

@@ -65,7 +65,7 @@ export const fileRoutes = router({
     .mutation(async ({ ctx, input }) => {
       const { session } = ctx;
       const url = new URL(input.path);
-      const photo = await db
+      const images = await db
         .insert(files)
         .values({
           ...input,
@@ -77,7 +77,7 @@ export const fileRoutes = router({
         })
         .returning();
 
-      return photo[0];
+      return images[0];
     }),
   listFiles: protectedProcedure.query(async () => {
     const result = await db.query.files.findMany({

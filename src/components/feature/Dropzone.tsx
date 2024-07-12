@@ -1,12 +1,22 @@
 import { Uppy } from "@uppy/core";
-import { ReactNode, useRef, useState } from "react";
+import { HTMLAttributes, ReactNode, useRef, useState } from "react";
 
-export function Dropzone({ uppy, children }: { uppy: Uppy, children: ReactNode | ((dragging: boolean) => ReactNode) }) {
+export function Dropzone(
+  {
+    uppy,
+    children,
+    ...divProps
+  }: {
+    uppy: Uppy,
+    children: ReactNode | ((dragging: boolean) => ReactNode)
+  } & Omit<HTMLAttributes<HTMLDivElement>, "children">
+) {
   const [dragging, setDragging] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   return (
     <div
+      {...divProps}
       onDragEnter={(e) => {
         e.preventDefault();
         setDragging(true);
